@@ -4,7 +4,7 @@ This plugin implements a ``JSONRPC`` class that can be used for performing
 [JSON-RPC](http://json-rpc.org/) calls. The plugin adheres to version 1.1 of
 the specification (working draft).
 
-## Usage
+## How to Use
 
 The JSON-RPC API is similar to the API used in core Request object. Here's a
 simple example:
