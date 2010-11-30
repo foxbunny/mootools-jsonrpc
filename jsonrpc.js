@@ -44,14 +44,14 @@ JSONRPC.call = new Class({
            encoding: this.options.encoding,
            headers: this.options.headers,
            onFailure: function(xhr){
-               this.fireEvent('failure', xhr, this.rpcid);
+               this.fireEvent('failure', xhr);
            }.bind(this),
            onSuccess: function(response) {
                if (response.id === this.rpcid) {
-                   this.fireEvent('success', response, this.rpcid);
+                   this.fireEvent('success', response);
                }
                else {
-                   this.fireEvent('failure', null, this.rpcid);
+                   this.fireEvent('failure', null);
                }
            }.bind(this)
         });
