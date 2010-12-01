@@ -1,10 +1,17 @@
 # JSON-RPC plugin for mootools
 
-This plugin extens the core ``Request.JSON`` class with a ``sendRPC`` function 
+This plugin implements the ``Request.JSONRPC`` class with a ``send`` function 
 that can be used for performing [JSON-RPC](http://json-rpc.org/) calls. The 
 plugin adheres supports all currently available version of the JSON-RPC 
 specification, but the implementation may be partial or inaccurate in some 
 cases.
+
+## Acknowledgements
+
+Thanks to [Arian Stolowijk](https://github.com/arian), and 
+[Mark Obcena](http://keetology.com/) for great advice, code, and guidance.
+
+## Bugs and Feature Requests
 
 Please report all issues to the 
 [issue tracker](https://github.com/foxbunny/mootools-jsonrpc/issues).
@@ -15,7 +22,7 @@ The JSON-RPC request is set up the same way as
 [Request.JSON](http://mootools.net/docs/core/Request/Request.JSON). Here is 
 an example:
 
-    var jsonRPCRequest = new Request.JSON({
+    var jsonRPCRequest = new Request.JSONRPC({
         url: 'http://example.com/services/jsonrpc',
         rpcVersion: '1.1', 
         onSuccess: function(person){
@@ -36,6 +43,8 @@ it is passed, we get the following result:
     
 The JSON-RPC specification version can be specified using the ``rpcVersion`` 
 option when creating the new ``Request.JSON`` object. 
+
+## Known issues
 
 Currently, the ``id`` of the response is not checked. If there is a mismatch
 between the ``id`` sent to the server, and the one returned (which could be 

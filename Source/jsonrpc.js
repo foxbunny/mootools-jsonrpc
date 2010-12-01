@@ -3,51 +3,83 @@
 description: Extends Request.JSON with methods to send JSON-RPC requests.
 license: GPL
 authors: Branko Vukelic
-provides: [Request.JSON.rpcVersion, Request.JSON.callRPC]
+provides: [Request.JSONRPC]
 requires:
-  core:1.3: [Request]
+  core:1.3: [Request.JSON]
 ...
 */
 
-// Add option to specify the JSON-RPC version
-Request.JSON.extend({
+Request.JSONRPC = new Class({
+    
+    Extends: Request.JSON,
+    
+    // JSON-RPC-specific options
     options: {
-        rpcVersion: '1.0'
-    }
-});
-
-Request.JSON.implement({
+        version: '1.0'
+    },
+   
     /**
      * Send a JSON-RPC request.
+     * You can use sendRPC method instead for more readable code.
      *
-     * @param method Name of the remote method.
-     * @param params An object or array containing parameters passed to remote method.
-     * @param id Optional id of the RPC call (defaults to a random string).
+     * @param opts Object with three parameters
      */
-    'sendRPC': function(method, params, id){
-        var rpcver = this.options.rpcVersion, data = {};
+    send: function(opts) {
+        var method = opts.method,
+            params = opts.params,
+            id = opts.id;
+                        
+        var data = {};
         
-        data.method = method;
-        data.id = id || String.uniqueID();
-        
-        // version (or jsonrpc) key is only required for 
-        // JSON-RPC specification versions 1.1 and later 
-        if (rpcver == '1.1') {
-            data.version = '1.1';
-        }
-        else 
-            if (rpcver == '2.0') {
+        if (method) {
+            // JSON-RPC 1.1 uses 'version' key
+            if (this.options.version == '1.1') {
+                data.version = '1.1';
+            }
+            // JSON-RPC 2.0 uses 'jsonrpc' key
+            else if (this.options.version == '2.0') {
                 data.jsonrpc = '2.0';
             }
-        
-        if (!rpcver && $type(params) != 'array') {
-            // Ensure the params are an array (not needed in 2.0)
-            data.params = [params];
+            
+            data.method = method;
+            
+            if (this.options.version === '2.0' || this.options.version == '1.1' && params) {
+                data.params = params;
+            }
+            else if (params) {
+                // The older specs and some non-conforming clients do not 
+                // allow non-array parameters. This is not a correct way to
+                // deal with the problem, but we do it anyway.
+                // FIXME: Find a better solution, or just remove this block.
+                data.params = [params];
+            }
+            
+            data.id = id || String.uniqueID();
+
+            // Call parent's send() function
+            this.parent(JSON.encode(data));
         }
         else {
-            data.params = params;
+            throw('JSON-RPC remote method must be specified.')
         }
+    },
+    
+    /**
+     * Wrapper that sends out RPC request.
+     * Packages up the parameters and calls send().
+     * 
+     * @param method 
+     * @param params
+     * @param id
+     */
+    sendRPC: function(method, params, id){
+        var opts = {};
         
-        this.send(JSON.encode(data));
+        opts.method = method;
+        opts.params = params;
+        opts.id = id;
+        
+        this.send(opts);
     }
+    
 });
