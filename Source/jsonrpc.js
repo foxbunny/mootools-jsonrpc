@@ -5,7 +5,7 @@
  authors: Branko Vukelic
  provides: [Request.JSON.rpcVersion, Request.JSON.callRPC]
  requires:
- core:1.3: [Request]
+   core:1.3: [Request]
  ...
  */
 
