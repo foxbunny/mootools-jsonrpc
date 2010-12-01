@@ -1,13 +1,13 @@
 /*
- ---
- description: Extends Request.JSON with methods to send JSON-RPC requests.
- license: GPL
- authors: Branko Vukelic
- provides: [Request.JSON.rpcVersion, Request.JSON.callRPC]
- requires:
-   core:1.3: [Request]
- ...
- */
+---
+description: Extends Request.JSON with methods to send JSON-RPC requests.
+license: GPL
+authors: Branko Vukelic
+provides: [Request.JSON.rpcVersion, Request.JSON.callRPC]
+requires:
+  core:1.3: [Request]
+...
+*/
 
 // Add option to specify the JSON-RPC version
 Request.JSON.extend({
