@@ -24,7 +24,7 @@ an example:
 
     var jsonRPCRequest = new Request.JSONRPC({
         url: 'http://example.com/services/jsonrpc',
-        rpcVersion: '1.1', 
+        version: '1.1', 
         onSuccess: function(person){
             alert(person.age);    // alerts "25 years".
             alert(person.height); // alerts "170 cm".
