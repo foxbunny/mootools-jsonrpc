@@ -7,8 +7,7 @@ specification, but the implementation may be partial or inaccurate in some
 cases. 
 
 The code has been completely rewritten 3 times, but this release (0.4) will 
-be the foundation of future releases, and I will going to stabilize the API
-until 1.0.
+be the foundation of future releases, and I will stabilize the API until 1.0.
 
 ## Acknowledgements
 
@@ -49,60 +48,38 @@ and callbacks, without repeating the method multiple times:
 
 Options for JSON-RPC configuration are as follows:
 
-#### url
-
-__String__: The URL of the JSON-RPC service. Defaults to ``'/'``.
-
-#### methodname
-
-__String__: Name of the remote method. Defaults to ``null``. This option is not
-required. It can be specified later when using the ``send`` function.
-
-#### params
-
-__Array__ or __Object__: Either a list of parameters, or an object containing
-the parameters that will be passed to the remote method. Defaults to ``null``.
-This option is not required.
-
-#### method
-
-__String__: HTTP method to use in the request. This is passed directly to 
-``Request.JSON``.
-
-#### encoding
-
-__String__: Encoding scheme. It is passed through to ``Request.JSON``.
-
-#### headers
-
-__String__: Request headers. Passed through to ``Request.JSON``.
+* ``url``: __String__ The URL of the JSON-RPC service. Defaults to ``'/'``.
+* ``methodname``: __String__ Name of the remote method. Defaults to ``null``. 
+  This option is not required. It can be specified later when using the ``send`` 
+  function.
+* ``params``: __Array__ or __Object__ Either a list of parameters, or an object 
+  containing the parameters that will be passed to the remote method. Defaults 
+  to ``null``. This option is not required.
+* ``method``: __String__ HTTP method to use in the request. This is passed directly 
+  to ``Request.JSON``.
+* ``encoding``: __String__ Encoding scheme. It is passed through to 
+  ``Request.JSON``.
+* ``headers``: __String__ Request headers. Passed through to ``Request.JSON``.
 
 ### Callback methods
 
 The JSONRPC class has four events and you can specify the matching callbacks.
 
-#### success / onSuccess
-
-This event is fired when the JSON-RPC call is finished, and the id returned 
-from the server matches the one used in the request.
-
-#### failure / onFailure
-
-This event is fired when the HTTP request fails. This even does not signify 
-that the actual RPC call failed. For the RPC failure (soft failure) use the
-``idMismatch`` and ``remoteFailure`` methods.
-
-#### remoteFailure / onRemoteFailure
-
-This event is fired when the remote method raises an exception. You should use 
-this method in order to handle remote exceptions. Only the ``error`` key of the
-complete response is returned.
-
-#### idMismatch / onIdMismatch
-
-This event is fired when the RPC id returned by the server does not match the
-one sent by JSONRPC call. Although the complete ``response`` object is passed
-to the callback function, it would probably be unwise to treat it as safe.
+* ``success`` / ``onSuccess``: This event is fired when the JSON-RPC call is 
+  finished, and the id returned from the server matches the one used in the 
+  request.
+* ``failure`` / ``onFailure``: This event is fired when the HTTP request 
+  fails. This even does not signify that the actual RPC call failed. For the 
+  RPC failure (soft failure) use the ``idMismatch`` and ``remoteFailure`` 
+  methods.
+* ``remoteFailure`` / ``onRemoteFailure``: This event is fired when the remote 
+  method raises an exception. You should use this method in order to handle 
+  remote exceptions. Only the ``error`` key of the complete response is 
+  returned.
+* ``idMismatch`` / ``onIdMismatch``:  This event is fired when the RPC id 
+  returned by the server does not match the one sent by JSONRPC call. Although 
+  the complete ``response`` object is passed to the callback function, it would 
+  probably be unwise to treat it as safe.
 
 ### Sending requests
 
@@ -111,24 +88,14 @@ single object as is argument. If any of the object properties matches the one
 specified in the configuration, it will override the configuration. The object 
 can have the following properties:
 
-#### method
-
-__String__: The remote method name.
-
-#### params
-
-__Array__ or __Object__: Parameters to pass to remote method.
-
-#### id
-
-__Any__: The RPC call id.
-
-#### onSuccess, onFailure, onRemoteFailure, onIdMismatch
-
-__Function__: Callback methods. These will override the configured methods. 
-Note that specifying callback methods when calling ``send`` will not only
-override the configured callbacks, but also prevent the events from being 
-fired, so anything listening to the events will not be able to catch them.
+* ``method``: __String__ The remote method name.
+* ``params``: __Array__ or __Object__ Parameters to pass to remote method.
+* ``id``: The RPC call id.
+* ``onSuccess``, ``onFailure``, ``onRemoteFailure``, ``onIdMismatch``: 
+  __Function__ Callback methods. These will override the configured methods. 
+  Note that specifying callback methods when calling ``send`` will not only
+  override the configured callbacks, but also prevent the events from being 
+  fired, so anything listening to the events will not be able to catch them.
  
 ## Known Issues
 
