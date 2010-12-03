@@ -1,23 +1,21 @@
 /*
 ---
-description: Implementation of JSON-RPC 1.1 for MooTools. 
+description: Implementation of JSON-RPC for MooTools. 
 license: GPL
 authors: Branko Vukelic
-provides: [JSONRPC, JSONRPC.call]
+provides: [JSONRPC]
 requires:
-  core:1.3: [Native, Class, Class.Extras, Event, Request]
+  core:1.3: [Native, Class, Class.Extras, Event, Request, JSON]
 ...
 */
 
-var JSONRPC = {};
-
-JSONRPC.version = '1.1';
-
-JSONRPC.call = new Class({
+var JSONRPC = new Class({
     Implements: [Events, Options],
     
     options: {
         url: '/',
+        methodname: null,
+        params: null,
         method: 'post',
         encoding: 'utf-8',
         headers: {
@@ -26,57 +24,75 @@ JSONRPC.call = new Class({
         }
     },
     
-    // JSONRPC events
+    // Events
     success: false,
     failure: false,
-    
-    // ID of the last RPC call
-    rpcid: null,
-    
-    // Cached objects
-    Request: false,
+    remoteFailure: false,
+    idMismatch: false,
     
     initialize: function(options){
         this.setOptions(options);
-        this.Request = new Request.JSON({
-           url: this.options.url,
-           method: this.options.method,
-           encoding: this.options.encoding,
-           headers: this.options.headers,
-           onFailure: function(xhr){
-               this.fireEvent('failure', xhr);
-           }.bind(this),
-           onSuccess: function(response) {
-               if (response.id === this.rpcid) {
-                   this.fireEvent('success', response);
-               }
-               else {
-                   this.fireEvent('failure', null);
-               }
-           }.bind(this)
-        });
         return this;
     },
     
-    /**
-     * Send a remote procedure call.
-     * If the remoteMethod parameter is falsy, it will do nothing.
-     * 
-     * @param remoteMethod name od the remote method to invoke.
-     * @param params an array of parameters to pass (named parameters not supported).
-     * @param id optional id of the call; defaults to String.uniqueID().
-     */
-    send: function(remoteMethod, params, id) {
-        if (remoteMethod) {
-            this.rpcid = id || String.uniqueID();
-            this.Request.send(
-                JSON.encode({
-                    version: JSONRPC.version,
-                    method: remoteMethod,
-                    params: params,
-                    id: this.rpcid
-                })
-            );
+    send: function(opts){
+        var id = opts.id || String.uniqueID(), params = {};
+        
+        caller = new Request.JSON({
+            url: this.options.url,
+            method: this.options.method,
+            encoding: this.options.encoding,
+            headers: this.options.headers,
+            onFailure: function(xhr){
+                if (typeOf(opts.onFailure) === 'function') {
+                    opts.onFailure(xhr);
+                }
+                else {
+                    this.fireEvent('failure', xhr);
+                }
+            }.bind(this)            ,
+            onSuccess: function(response){
+                if (response.id == id) {
+                    if (response.error) {
+                        if (typeOf(opts.onRemoteFailure) === 'function') {
+                            opts.onRemoteFailure(response.error);
+                        }
+                        else {
+                            this.fireEvent('remoteFailure', response.error);
+                        }
+                    }
+                    else {
+                        if (typeOf(opts.onSuccess) === 'function') {
+                            opts.onSuccess(response);
+                        }
+                        else {
+                            this.fireEvent('success', response);
+                        }
+                    }
+                }
+                else {
+                    if (typeOf(opts.onIdMismatch) === 'function') {
+                        opts.onIdMismatch(response);
+                    }
+                    else {
+                        this.fireEvent('idMismatch', response);
+                    }
+                }
+            }.bind(this)
+        });
+        
+        if (this.options.version === '1.1') {
+            params.version = '1.1';
         }
+        else 
+            if (this.options.version === '2.0') {
+                params.jsonrpc = '2.0';
+            }
+        params.method = opts.method || this.options.methodname;
+        params.params = opts.params || null;
+        params.id = id;
+        
+        caller.send(JSON.encode(params));
     }
+    
 });
