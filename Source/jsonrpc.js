@@ -1,4 +1,5 @@
 /*
+ *
 ---
 description: Implementation of JSON-RPC for MooTools. 
 license: GPL
@@ -92,7 +93,7 @@ var JSONRPC = new Class({
                 params.jsonrpc = '2.0';
             }
         params.method = opts.method || this.options.methodname;
-        params.params = opts.params || null;
+        params.params = opts.params || this.options.params;
         params.id = id;
         
         caller.send(JSON.encode(params));
