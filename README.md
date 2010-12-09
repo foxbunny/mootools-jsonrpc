@@ -11,9 +11,12 @@ be the foundation of future releases, and I will stabilize the API until 1.0.
 
 ## Acknowledgements
 
-Special thanks to [Arian Stolwijk](http://www.aryweb.nl) (arian), and 
-[Mark Obcena](http://keetology.com/) (keeto) for great 
-advice, code, guidance, and generally being cool guys to talk to. :)
+I thank the following people for their invaluable advice, code, and generally
+being cool guys to talk to (in no particular order).
+
+* [Arian Stolwijk](http://www.aryweb.nl) (arian)
+* [Mark Obcena](http://keetology.com/) (keeto)  
+* [Adrian Statescu](Adrian Statescu) (thinkphp)
 
 ## Bugs and Feature Requests
 
