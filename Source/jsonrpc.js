@@ -1,5 +1,4 @@
 /*
- *
 ---
 description: Implementation of JSON-RPC for MooTools. 
 license: GPL
